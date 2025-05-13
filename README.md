@@ -25,3 +25,4 @@ This repository demonstrates **end-to-end traceability enforcement**. The design
 pip install -r requirements.txt
 pytest --cov=src
 ```
+# Trigger CI
