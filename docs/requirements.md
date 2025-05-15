@@ -7,3 +7,8 @@
 | REQ-003 | The system shall multiply two numbers.           | SPEC-003        |
 | REQ-004 | The system shall divide two numbers.             | SPEC-004        |
 | REQ-005 | The system shall validate all inputs before processing. | SPEC-NF-003 |
+
+# INFRASTRUCTURE
+| ID         | Description                                       | Related Spec ID  |
+|------------|---------------------------------------------------|------------------|
+| REQ-INF-000 | CI shall run on pull_request events targeting main | SPEC-INF-001   |
