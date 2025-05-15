@@ -24,6 +24,20 @@ jobs:
         mypy src/
         bandit -r src/
 
+    - name: Extract PR commit message (not merge)
+      if: github.event_name == 'pull_request'
+      run: |
+        git fetch --unshallow || true
+        git fetch origin ${{ github.event.pull_request.head.ref }}
+        PR_SHA="${{ github.event.pull_request.head.sha }}"
+        COMMIT_MSG=$(git log --format=%B -n 1 $PR_SHA)
+        echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
+
+    - name: Extract push commit message (if not PR)
+      if: github.event_name != 'pull_request'
+      run: |
+        COMMIT_MSG=$(git log -1 --pretty=%B)
+        echo "COMMIT_MSG=$COMMIT_MSG" >> $GITHUB_ENV
     - name: Traceability enforcement
       run: |
         python REQUIREMENT_COVERAGE_CHECK.py
