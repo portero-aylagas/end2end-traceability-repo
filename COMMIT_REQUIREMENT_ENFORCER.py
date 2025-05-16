@@ -3,14 +3,13 @@ Ensure the last commit message contains at least one REQ-ID.
 Used in CI to block untraceable commits.
 """
 
-import subprocess
+import os
 import re
 
-result = subprocess.run(["git", "log", "-1", "--pretty=%B"], stdout=subprocess.PIPE, text=True)
-message = result.stdout.strip()
+message = os.getenv("COMMIT_MSG", "").strip()
 
-if not re.search(r"REQ-\d+", message):
-    print("ERROR: Commit message must reference a REQ-ID (e.g., REQ-001)")
+if not re.search(r"REQ-(\d+|INF-\d+)", message):
+    print(f"ERROR: Commit message must reference a REQ-ID (e.g., REQ-001 or REQ-INF-000). Found: {message}")
     exit(1)
 
-print("Commit message references REQ-ID. OK.")
+print(f"✅ Commit message references REQ-ID. OK: {message}")

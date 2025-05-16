@@ -25,3 +25,9 @@ This module supports four core arithmetic operations: addition, subtraction, mul
 - SPEC-NF-001: Division shall raise a fault on divide-by-zero.
 - SPEC-NF-002: Each function shall log operation and exceptions.
 - SPEC-NF-003: Functions shall validate inputs are floats or ints.
+
+## 5. Infrastructure Requirements
+
+| ID           | Description                                                           |
+|--------------|-----------------------------------------------------------------------|
+| SPEC-INF-001 | The CI pipeline shall execute on pull_request events targeting `main` |
