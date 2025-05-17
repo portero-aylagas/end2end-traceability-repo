@@ -5,7 +5,7 @@ Ensure every function in code/tests explicitly references a REQ-ID.
 import os
 import re
 
-req_pattern = re.compile(r"REQ-\d+")
+req_pattern = re.compile(r"REQ-(\d+|INF-\d+)")
 def_pattern = re.compile(r"^\s*def\s+\w+\(.*\):")
 
 missing_annotations = []
