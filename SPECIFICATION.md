@@ -1,33 +1,34 @@
-# System Specification — Structured (IEEE 830 Style)
+# 📘 System Specification — Structured (IEEE 830 Style)
 
 ## 1. Introduction
 ### 1.1 Purpose
-Define arithmetic operations required for a critical computation engine with full traceability and fault handling.
+Define functional and infrastructure behavior for a CI-enforced, traceable development system.
 
 ### 1.2 Scope
-This module supports four core arithmetic operations: addition, subtraction, multiplication, and division. The system shall validate inputs and handle all numerical edge cases.
+This specification applies to the development environment that enforces requirement-driven development, ensuring full traceability from specification to test.
 
-## 2. Overall Description
-- Platform: Python 3.10+
-- Criticality: High integrity
-- Environment: GitHub CI
+---
 
-## 3. Functional Requirements
+## 2. Functional Specifications
 
-| ID       | Requirement Description                                     |
-|----------|--------------------------------------------------------------|
-| SPEC-001 | The system shall add two numeric inputs and return the sum. |
-| SPEC-002 | The system shall subtract one number from another.          |
-| SPEC-003 | The system shall multiply two numeric values.               |
-| SPEC-004 | The system shall divide two numeric values safely.          |
+| Spec ID    | Description                                           |
+|------------|-------------------------------------------------------|
+| SPEC-001   | The system shall support basic arithmetic operations. |
+| SPEC-002   | The system shall validate inputs before computation.  |
 
-## 4. Non-functional Requirements
-- SPEC-NF-001: Division shall raise a fault on divide-by-zero.
-- SPEC-NF-002: Each function shall log operation and exceptions.
-- SPEC-NF-003: Functions shall validate inputs are floats or ints.
+---
 
-## 5. Infrastructure Requirements
+## 3. Infrastructure Specifications
 
-| ID           | Description                                                           |
-|--------------|-----------------------------------------------------------------------|
-| SPEC-INF-001 | The CI pipeline shall execute on pull_request events targeting `main` |
+| Spec ID        | Description                                                                  |
+|----------------|------------------------------------------------------------------------------|
+| SPEC-INF-001   | CI shall enforce traceability across all code, tests, and commit metadata.  |
+| SPEC-INF-002   | CI shall enforce REQ-IDs exist in `requirements.md`.                        |
+| SPEC-INF-003   | CI shall enforce REQ-coverage for implementation and testing.               |
+| SPEC-INF-004   | CI shall reject commits/PRs without REQ-IDs.                                |
+| SPEC-INF-005   | GitHub shall enforce status checks and PR review before merging.            |
+| SPEC-INF-006   | GitHub shall prevent direct pushes to `main`.                               |
+| SPEC-INF-007   | CI shall post traceability and test summary reports to the GitHub UI.       |
+| SPEC-INF-008   | CI shall generate detailed coverage and requirement validation artifacts.   |
+| SPEC-INF-009   | Commit messages and PR titles shall follow the REQ-ID enforcement pattern.  |
+| SPEC-INF-010   | All traceability-relevant scripts must include logging for transparency.    |
