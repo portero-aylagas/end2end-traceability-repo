@@ -6,16 +6,16 @@ import pytest
 
 # REQ-INF-010
 def test_commit_message_req_id():
-    """Test to check if commit messages include a valid REQ-ID (e.g., REQ-001, REQ-INF-001)."""
+    """Allow merge commits without REQ-ID; enforce on authored commits only."""
     result = subprocess.run(['git', 'log', '--oneline', '-n', '1'], stdout=subprocess.PIPE)
     commit_message = result.stdout.decode('utf-8').strip()
 
-    # Allow CI merge commits without REQ
     if commit_message.startswith("Merge"):
-        return  # Merge commit, skip validation
+        return  # merge commits are exempt
 
     assert "REQ-" in commit_message or "REQ-INF-" in commit_message, \
         f"Commit message does not contain valid REQ-ID: {commit_message}"
+
 
 
 # REQ-INF-010
