@@ -2,6 +2,9 @@
 Prints a REQ-by-REQ table showing implementation and test coverage.
 """
 
+# REQ-INF-007
+# REQ-INF-010
+
 import re
 import os
 
@@ -30,5 +33,9 @@ for req in sorted(req_ids):
         failed = True
     print(f"| {req:<8} |     {imp}     |   {tst}  |")
 
+print()
 if failed:
+    print("❌ One or more REQs are missing implementation or tests.")
     exit(1)
+else:
+    print("✅ All REQs are fully implemented and tested.")
