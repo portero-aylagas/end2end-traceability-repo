@@ -9,16 +9,25 @@ def test_commit_message_enforcer_blocks_missing_req():
     from COMMIT_REQUIREMENT_ENFORCER import is_commit_message_valid
     assert not is_commit_message_valid("fix: forgot tag")
 
-# REQ-INF-009, REQ-INF-010
+# REQ-INF-010
 def test_commit_message_req_id():
-    """Ensure last authored commit message includes a valid REQ-ID (or is a merge commit)."""
-    result = subprocess.run(['git', 'log', '--oneline', '-n', '1'], stdout=subprocess.PIPE)
-    commit_message = result.stdout.decode('utf-8').strip()
+    """Ensure authored commit messages include a valid REQ-ID, skip merges."""
+    import subprocess
 
-    if commit_message.startswith("Merge"):
-        return  # merge commits are allowed
-    assert "REQ-" in commit_message or "REQ-INF-" in commit_message, \
-        f"Commit message does not contain valid REQ-ID: {commit_message}"
+    # Get last 5 commits to be more tolerant in PR/Merge CI builds
+    result = subprocess.run(
+        ['git', 'log', '--pretty=%s', '-n', '5'],
+        stdout=subprocess.PIPE,
+        text=True,
+    )
+    commit_messages = result.stdout.strip().splitlines()
+
+    for msg in commit_messages:
+        if msg.startswith("Merge"):
+            continue
+        assert "REQ-" in msg or "REQ-INF-" in msg, \
+            f"Commit message does not contain valid REQ-ID: {msg}"
+        break  # test passed on first authored commit
 
 # REQ-INF-010
 def test_traceability_matrix_sync():
