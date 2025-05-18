@@ -64,3 +64,28 @@ jobs:
       run: |
         echo "### 📋 REQ Coverage Report" >> $GITHUB_STEP_SUMMARY
         python REQ_VALIDATION_REPORT.py >> $GITHUB_STEP_SUMMARY
+
+    # REQ-INF-008
+    - name: Upload coverage reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: coverage-html
+        path: htmlcov/
+
+    # REQ-INF-008
+    - name: Upload traceability matrix
+      uses: actions/upload-artifact@v4
+      with:
+        name: traceability-matrix
+        path: TRACEABILITY.md
+
+    # REQ-INF-008
+    - name: Upload REQ validation summary
+      uses: actions/upload-artifact@v4
+      with:
+        name: req-validation-report
+        path: |
+          test-results.xml
+          coverage.xml
+
+
