@@ -32,3 +32,4 @@ This specification applies to the development environment that enforces requirem
 | SPEC-INF-008   | CI shall generate detailed coverage and requirement validation artifacts.   |
 | SPEC-INF-009   | Commit messages and PR titles shall follow the REQ-ID enforcement pattern.  |
 | SPEC-INF-010   | All traceability-relevant scripts must include logging for transparency.    |
+| SPEC-INF-011  | CI shall allow unimplemented REQs but block implemented REQs without tests.  |
