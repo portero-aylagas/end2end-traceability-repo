@@ -1,56 +1,53 @@
-"""
-Prints a REQ-by-REQ table showing implementation and test coverage.
-"""
-
 # REQ-INF-007
 # REQ-INF-010
+# REQ-INF-011
 
-import re
+"""
+Prints a REQ-by-REQ table showing implementation and test coverage.
+
+CI fails if any REQ is implemented (in code) but not tested.
+Unimplemented REQs are allowed (to support forward planning).
+"""
+
 import os
+import re
 
-# Load all declared REQs
-# REQ-INF-010
 with open("docs/requirements.md") as f:
     req_ids = re.findall(r"REQ-(?:\d+|INF-\d+)", f.read())
 
-# Search for REQ-IDs in a folder (recursively)
-# REQ-INF-010
-def find_reqs_in(folder, extensions=(".py", ".yml", ".yaml", ".md")):
+def find_reqs_in(folder):
     found = set()
     for root, _, files in os.walk(folder):
         for file in files:
-            if file.endswith(extensions):
-                try:
-                    with open(os.path.join(root, file), errors="ignore") as f:
-                        found |= set(re.findall(r"REQ-(?:\d+|INF-\d+)", f.read()))
-                except Exception:
-                    continue
+            if file.endswith((".py", ".yml", ".md")):
+                with open(os.path.join(root, file), errors="ignore") as f:
+                    found |= set(re.findall(r"REQ-(?:\d+|INF-\d+)", f.read()))
     return found
 
-# Aggregate all implementation locations
 impl = (
     find_reqs_in("src") |
     find_reqs_in(".github") |
-    find_reqs_in(".")  # includes root-level enforcement scripts
+    find_reqs_in(".")  # for top-level CI scripts
 )
-
-# Search only test files for test coverage
 tests = find_reqs_in("tests")
 
-# Generate the coverage table
 print("| REQ ID       | Implemented | Tested |")
 print("|--------------|-------------|--------|")
 failed = False
 for req in sorted(req_ids):
-    imp = "✅" if req in impl else "❌"
-    tst = "✅" if req in tests else "❌"
-    if imp == "❌" or tst == "❌":
-        failed = True
+    is_impl = req in impl
+    is_test = req in tests
+    imp = "✅" if is_impl else "❌"
+    tst = "✅" if is_test else "❌"
+
+    if is_impl and not is_test:
+        failed = True  # only fail if implemented but not tested
+
     print(f"| {req:<12} |     {imp}     |   {tst}  |")
 
 print()
 if failed:
-    print("❌ One or more REQs are missing implementation or tests.")
+    print("❌ One or more REQs are implemented but not tested.")
     exit(1)
 else:
-    print("✅ All REQs are fully implemented and tested.")
+    print("✅ All implemented REQs are properly tested.")

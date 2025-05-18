@@ -24,3 +24,4 @@
 | REQ-INF-008  | CI must export traceability and test artifacts.                             | SPEC-INF-008     |
 | REQ-INF-009  | CI must validate commit messages and PR titles contain valid REQ-IDs.       | SPEC-INF-009     |
 | REQ-INF-010  | All enforcement scripts must include logging for auditability.              | SPEC-INF-010     |
+| REQ-INF-011  | The system shall allow REQs to be declared before implementation, but block untested implementations. | SPEC-INF-011 |
