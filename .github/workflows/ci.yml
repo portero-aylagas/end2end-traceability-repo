@@ -47,12 +47,14 @@ jobs:
         python COMMIT_REQUIREMENT_ENFORCER.py
         python FUNCTION_REQUIREMENT_CHECK.py
 
+    # REQ-INF-012
+    - name: Generate traceability matrix
+      run: python GENERATE_TRACEABILITY_MATRIX.py
+
+    # REQ-INF-013
     - name: Validate traceability matrix
       run: python TRACEABILITY_VALIDATION.py
 
-    - name: Generate traceability matrix (dry run)
-      run: python GENERATE_TRACEABILITY_MATRIX.py --dry-run || true
-      
     # REQ-INF-008
     - name: Run tests with coverage
       run: PYTHONPATH=. pytest --cov=src --cov-report=xml --cov-report=html --junitxml=test-results.xml tests/
@@ -87,5 +89,3 @@ jobs:
         path: |
           test-results.xml
           coverage.xml
-
-

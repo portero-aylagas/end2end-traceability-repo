@@ -33,3 +33,5 @@ This specification applies to the development environment that enforces requirem
 | SPEC-INF-009   | Commit messages and PR titles shall follow the REQ-ID enforcement pattern.  |
 | SPEC-INF-010   | All traceability-relevant scripts must include logging for transparency.    |
 | SPEC-INF-011  | CI shall allow unimplemented REQs but block implemented REQs without tests.  |
+| SPEC-INF-012   | The traceability matrix must be generated dynamically in CI only.          |
+| SPEC-INF-013   | The repo shall not store static traceability artifacts as tracked files.   |

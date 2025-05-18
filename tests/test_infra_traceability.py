@@ -111,3 +111,16 @@ def test_traceability_logic_all_combinations(tmp_path):
             assert not allowed, f"{req_id} should be rejected by CI"
         else:
             assert allowed, f"{req_id} should be allowed by CI"
+
+# REQ-INF-012
+def test_traceability_matrix_can_be_generated():
+    """Ensure traceability matrix generator runs without errors."""
+    result = subprocess.run(["python", "GENERATE_TRACEABILITY_MATRIX.py", "--dry-run"], capture_output=True)
+    assert result.returncode == 0, "Traceability matrix generation failed"
+
+# REQ-INF-013
+def test_traceability_matrix_not_tracked_by_git():
+    """Ensure TRACEABILITY.md is not version-controlled."""
+    result = subprocess.run(["git", "ls-files"], capture_output=True, text=True)
+    tracked_files = result.stdout.splitlines()
+    assert "TRACEABILITY.md" not in tracked_files, "TRACEABILITY.md is mistakenly tracked by Git"
