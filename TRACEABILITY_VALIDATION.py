@@ -2,6 +2,9 @@
 Validates that each requirement has a corresponding row in TRACEABILITY.md.
 """
 
+# REQ-INF-012
+# REQ-INF-013
+
 import re
 
 with open("docs/requirements.md") as f:
