@@ -5,15 +5,19 @@
 """
 Prints a REQ-by-REQ table showing implementation and test coverage.
 
-CI fails if any REQ is implemented (in code) but not tested.
-Unimplemented REQs are allowed (to support forward planning).
+CI will:
+- ✅ Allow REQs that are defined but not implemented/tested yet.
+- ❌ Block REQs that are implemented but not tested.
+- ❌ Block REQ-IDs in code/tests that are not in requirements.md.
 """
 
-import os
 import re
+import os
+import sys
 
 with open("docs/requirements.md") as f:
     req_ids = re.findall(r"REQ-(?:\d+|INF-\d+)", f.read())
+    known_reqs = set(req_ids)
 
 def find_reqs_in(folder):
     found = set()
@@ -24,30 +28,35 @@ def find_reqs_in(folder):
                     found |= set(re.findall(r"REQ-(?:\d+|INF-\d+)", f.read()))
     return found
 
-impl = (
-    find_reqs_in("src") |
-    find_reqs_in(".github") |
-    find_reqs_in(".")  # for top-level CI scripts
+impl_reqs = (
+    find_reqs_in("src")
+    | find_reqs_in(".github")
+    | find_reqs_in(".")
 )
-tests = find_reqs_in("tests")
+test_reqs = find_reqs_in("tests")
 
+# Detect unknown REQs used in code/tests
+unknown_reqs = (impl_reqs | test_reqs) - known_reqs
+if unknown_reqs:
+    print("❌ ERROR: The following REQ-IDs are used but not declared in requirements.md:")
+    for r in sorted(unknown_reqs):
+        print(" -", r)
+    sys.exit(1)
+
+# Table output
 print("| REQ ID       | Implemented | Tested |")
 print("|--------------|-------------|--------|")
-failed = False
-for req in sorted(req_ids):
-    is_impl = req in impl
-    is_test = req in tests
-    imp = "✅" if is_impl else "❌"
-    tst = "✅" if is_test else "❌"
-
-    if is_impl and not is_test:
-        failed = True  # only fail if implemented but not tested
-
-    print(f"| {req:<12} |     {imp}     |   {tst}  |")
+fail = False
+for req in sorted(known_reqs):
+    impl = "✅" if req in impl_reqs else "❌"
+    test = "✅" if req in test_reqs else "❌"
+    print(f"| {req:<12} |     {impl}     |   {test}  |")
+    if impl == "✅" and test == "❌":
+        fail = True  # implemented but not tested → BLOCK
 
 print()
-if failed:
-    print("❌ One or more REQs are implemented but not tested.")
-    exit(1)
+if fail:
+    print("❌ One or more implemented REQs are missing tests.")
+    sys.exit(1)
 else:
-    print("✅ All implemented REQs are properly tested.")
+    print("✅ REQ enforcement passed.")
