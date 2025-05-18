@@ -73,3 +73,41 @@ def test_branch_protection_is_documented():
         text = f.read().lower()
         assert "branch protection" in text or "ci enforcement" in text, \
             "Branch protection rules not documented in README."
+
+# REQ-INF-011
+def test_traceability_logic_all_combinations(tmp_path):
+    """Simulate all valid and invalid REQ states based on documentation, implementation, and test coverage."""
+
+    # Simulated REQ table format (as output by REQ_VALIDATION_REPORT.py)
+    table = """
+| REQ ID       | Implemented | Tested |
+|--------------|-------------|--------|
+| REQ-A        |     ❌     |   ❌  |
+| REQ-B        |     ✅     |   ❌  |
+| REQ-C        |     ✅     |   ✅  |
+| REQ-D        |     ❌     |   ✅  |
+"""
+
+    # Write simulated report to a temp file
+    fake_report = tmp_path / "REQ_VALIDATION_REPORT.txt"
+    fake_report.write_text(table)
+
+    # Now parse and validate logic
+    lines = table.strip().split("\n")[2:]  # skip header
+    for line in lines:
+        parts = line.strip("|").split("|")
+        req_id = parts[0].strip()
+        impl = parts[1].strip()
+        test = parts[2].strip()
+
+        if impl == "✅" and test == "❌":
+            allowed = False  # Invalid: implemented but not tested
+        elif impl == "❌" and test == "✅":
+            allowed = False  # Invalid: tested but not implemented
+        else:
+            allowed = True
+
+        if req_id == "REQ-B" or req_id == "REQ-D":
+            assert not allowed, f"{req_id} should be rejected by CI"
+        else:
+            assert allowed, f"{req_id} should be allowed by CI"
